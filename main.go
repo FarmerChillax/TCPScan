@@ -1,9 +1,9 @@
 package main
 
 import (
+	"TCPScan/pkg"
 	"flag"
 	"fmt"
-	"tcp-scan/pkg"
 	"time"
 
 	"github.com/pkg/profile"
