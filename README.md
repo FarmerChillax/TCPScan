@@ -1,6 +1,6 @@
 # TCPScan
 
-一个 simple 网段嗅探工具
+一个 simple cli 网段嗅探工具
 
 ## Todos
 
