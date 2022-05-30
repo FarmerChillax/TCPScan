@@ -7,11 +7,48 @@ import (
 	"github.com/fatih/color"
 )
 
-const TEMPLATE = "%d.%d.%d.%d:%d"
+const (
+	HOST_TEMPLATE     = "%v.%v.%v.%v"
+	ENDPOINT_TEMPLATE = "%v:%v"
+)
+
+func Start(segments []string, workers int) {
+	taskChan := make(chan Task, workers)
+	resultChan := make(chan Task, 10)
+	done := make(chan struct{})
+
+	// 开启 worker
+	for i := 0; i < workers; i++ {
+		go worker(taskChan, resultChan, done)
+	}
+	// 获取 worker 完成状态
+	go CloseResult(done, resultChan, workers)
+	// 推送任务
+	go PushTasks(segments, taskChan)
+
+	ProcessResult(resultChan)
+}
+
+func PushTasks(segments []string, taskChan chan Task, timeout ...time.Duration) {
+	switch len(segments) {
+	case 3:
+		for i := 1; i < 255; i++ {
+			host := fmt.Sprintf(HOST_TEMPLATE, segments[0], segments[1], segments[2], i)
+			startPort(host, 1, 65535, taskChan, timeout...)
+		}
+	}
+}
+
+func startPort(host string, start, end int, taskChan chan Task, timeout ...time.Duration) {
+	for port := start; port < end; port++ {
+		endpoint := fmt.Sprintf(ENDPOINT_TEMPLATE, host, port)
+		InitTask(endpoint, taskChan, timeout...)
+	}
+}
 
 // 端口扫描
 func StartPort(host string) {
-	taskChan := make(chan Task, 10)
+	taskChan := make(chan Task, 200)
 	result := make(chan Task, 10)
 	done := make(chan struct{})
 	workers := cap(taskChan)

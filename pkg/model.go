@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"net"
 	"time"
 )
@@ -10,6 +11,10 @@ type Task struct {
 	Timeout  time.Duration
 	Status   bool
 	Error    error
+}
+
+func NewTaskWithOption(host, port string, timeout ...time.Duration) *Task {
+	return NewTask(fmt.Sprintf("%s:%s", host, port), timeout...)
 }
 
 func NewTask(endpoint string, timeout ...time.Duration) *Task {
