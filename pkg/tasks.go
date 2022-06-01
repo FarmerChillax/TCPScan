@@ -82,13 +82,26 @@ func CloseResult(done chan struct{}, resule chan Task, workers int) {
 }
 
 func ProcessResult(results chan Task) {
+	collectChan := make(chan Task)
 	for result := range results {
 		if result.Status {
 			color.Green("[成功] 扫描地址：%s\n", result.Endpoint)
+			collectChan <- result
+		} else {
+			color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
 		}
-		// else {
-		// 	color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
-		// }
+	}
+
+	close(collectChan)
+}
+
+func collector(collectors <-chan Task) {
+	results := []string{}
+	for collect := range collectors {
+		results = append(results, collect.Endpoint)
+	}
+	for _, item := range results {
+		color.Green("[成功] 扫描地址：%s\n", item)
 	}
 }
 
