@@ -8,12 +8,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func demo() {
+func Demo() {
 	app := &cli.App{
-		Name:  "boom",
-		Usage: "make an explosive entrance",
+		Name:  "TCPScan",
+		Usage: "let network discover easy.",
 		Action: func(c *cli.Context) error {
-			fmt.Println("boom! I say!")
+			fmt.Println(c.Args().Len())
 			return nil
 		},
 	}
