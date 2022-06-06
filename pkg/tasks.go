@@ -12,7 +12,7 @@ const (
 	ENDPOINT_TEMPLATE = "%v:%v"
 )
 
-func Start(segments []string, workers int) {
+func Start(segments []string, startPort, endPort int64, workers int) {
 	taskChan := make(chan Task, workers)
 	resultChan := make(chan Task, 10)
 	done := make(chan struct{})
@@ -85,10 +85,9 @@ func ProcessResult(results chan Task) {
 	for result := range results {
 		if result.Status {
 			color.Green("[成功] 扫描地址：%s\n", result.Endpoint)
+		} else {
+			color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
 		}
-		// else {
-		// 	color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
-		// }
 	}
 }
 
