@@ -27,8 +27,6 @@ func main() {
 	segments := []string{*segA, *segB, *segC}
 	fmt.Println(segments, *workers)
 	// args := flag.Args()
-	// fmt.Println(args)
-	// fmt.Println(*host)
 
 	// 得到A-D网段
 	// segmentList := []string{"10", "9", "10"}
