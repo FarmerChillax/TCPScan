@@ -5,7 +5,7 @@
 ## Todos
 
 - [x] 端口扫描器
-- [ ] 自定义扫描网段
+- [x] 自定义扫描网段
 - [ ] 自定义扫描端口
 - [ ] Support scan with TCP/SYN
 - [ ] Support scan rate

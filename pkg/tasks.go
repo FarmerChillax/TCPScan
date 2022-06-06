@@ -48,7 +48,7 @@ func startPort(host string, start, end int, taskChan chan Task, timeout ...time.
 
 // 端口扫描
 func StartPort(host string) {
-	taskChan := make(chan Task, 200)
+	taskChan := make(chan Task, 500)
 	result := make(chan Task, 10)
 	done := make(chan struct{})
 	workers := cap(taskChan)
@@ -82,12 +82,30 @@ func CloseResult(done chan struct{}, resule chan Task, workers int) {
 }
 
 func ProcessResult(results chan Task) {
+	collectChan := make(chan Task)
+
+	go collector(collectChan)
+
 	for result := range results {
 		if result.Status {
 			color.Green("[成功] 扫描地址：%s\n", result.Endpoint)
+			collectChan <- result
 		} else {
 			color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
 		}
+	}
+
+	close(collectChan)
+}
+
+func collector(collectors <-chan Task) {
+	results := []string{}
+	for collect := range collectors {
+		results = append(results, collect.Endpoint)
+	}
+	
+	for _, item := range results {
+		color.Yellow("[成功] 扫描地址：%s\n", item)
 	}
 }
 
