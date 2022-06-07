@@ -2,6 +2,7 @@ package main
 
 import (
 	"TCPScan/cmd"
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
@@ -38,5 +39,9 @@ func main() {
 	// pkg.Start(segments, *workers)
 
 	// test cli
-	cmd.Demo()
+	// cmd.Demo()
+	err := cmd.Excute()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
