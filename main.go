@@ -1,7 +1,9 @@
 package main
 
 import (
-	"TCPScan/cmd"
+	"TCPScan/pkg"
+	"flag"
+	"fmt"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
@@ -19,14 +21,14 @@ func main() {
 	// defer profile.Start(profile.MemProfile, profile.MemProfileRate(1)).Stop()
 	// 加载环境变量
 	// ...
-	// host := flag.String("host", "127.0.0.1", "目标主机")
-	// segA := flag.String("A", "127", "A网段")
-	// segB := flag.String("B", "0", "B")
-	// segC := flag.String("C", "0", "C网段")
-	// workers := flag.Int("worker", 20, "goroutine number.")
-	// flag.Parse()
-	// segments := []string{*segA, *segB, *segC}
-	// fmt.Println(segments, *workers)
+	// host := flag.String("host", "10.1.1.1", "目标主机")
+	segA := flag.String("A", "10", "A网段")
+	segB := flag.String("B", "1", "B")
+	segC := flag.String("C", "1", "C网段")
+	workers := flag.Int("worker", 100, "goroutine number.")
+	flag.Parse()
+	segments := []string{*segA, *segB, *segC}
+	fmt.Println(segments, *workers)
 	// args := flag.Args()
 
 	// 得到A-D网段
@@ -35,8 +37,8 @@ func main() {
 	// ...
 	// address := fmt.Sprintf("%s:%%d", *host)
 	// pkg.StartPort(address)
-	// pkg.Start(segments, *workers)
+	pkg.Start(segments, 70, 90, *workers)
 
 	// test cli
-	cmd.Demo()
+	// cmd.Demo()
 }

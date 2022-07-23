@@ -48,7 +48,7 @@ func startPort(host string, start, end int, taskChan chan Task, timeout ...time.
 
 // 端口扫描
 func StartPort(host string) {
-	taskChan := make(chan Task, 500)
+	taskChan := make(chan Task, 1024)
 	result := make(chan Task, 10)
 	done := make(chan struct{})
 	workers := cap(taskChan)
@@ -91,7 +91,7 @@ func ProcessResult(results chan Task) {
 			color.Green("[成功] 扫描地址：%s\n", result.Endpoint)
 			collectChan <- result
 		} else {
-			color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
+			// color.Red("[失败] 扫描地址：%s; 失败原因：%s\n", result.Endpoint, result.Error.Error())
 		}
 	}
 
@@ -100,10 +100,29 @@ func ProcessResult(results chan Task) {
 
 func collector(collectors <-chan Task) {
 	results := []string{}
-	for collect := range collectors {
-		results = append(results, collect.Endpoint)
+	timer := time.NewTimer(1 * time.Second)
+
+	// for collect := range collectors {
+Loop:
+	for {
+		select {
+		case <-timer.C:
+			if len(results) > 50 {
+				fmt.Println("doing....")
+				fmt.Println(results)
+				// save result to disk
+				// do something ...
+				results = results[:0]
+			}
+			timer.Reset(1 * time.Second)
+		case collect, ok := <-collectors:
+			if !ok {
+				break Loop
+			}
+			results = append(results, collect.Endpoint)
+		}
 	}
-	
+
 	for _, item := range results {
 		color.Yellow("[成功] 扫描地址：%s\n", item)
 	}
