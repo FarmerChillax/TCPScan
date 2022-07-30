@@ -1,9 +1,11 @@
 package main
 
 import (
+	"TCPScan/cmd"
 	"TCPScan/pkg"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
@@ -41,11 +43,8 @@ func main() {
 
 	// test cli
 	// cmd.Demo()
-<<<<<<< HEAD
-=======
 	err := cmd.Excute()
 	if err != nil {
 		log.Fatalln(err)
 	}
->>>>>>> d145c74a3ad07d9a5ce9d1cc77350d37b09e3b0f
 }
